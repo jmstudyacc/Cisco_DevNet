@@ -21,3 +21,6 @@ def get_auth_token():
     token = resp.json()['Token']    # Retrieve the 'Token' from the returned JSON
     print("Token Retrieved: {}".format(token))    # Print out the retrieved token
     return token   # Create a return statement so the token can be used again
+
+if __name__ == "__main__":
+  get_auth_token()
