@@ -36,10 +36,10 @@ def main():
   # With JSON output, iterate over the dictionaries and print specified dictionaries
   if get_resp.ok:
     for device in get_resp.json()["response"]:
-      print(f"ID: {device['id']} IP: {device['managementIpAddress']}")
-    else:
-      print(f"Device collection failed with code {get_resp.status_code}")
-      print(f"Failure body: {get_resp.text}")
+      print(f"Hostname: {device['hostname']}	ID: {device['id']}	IP: {device['managementIpAddress']}")
+  else:
+    print(f"Device collection failed with code {get_resp.status_code}")
+    print(f"Failure body: {get_resp.text}")
 
 
 
