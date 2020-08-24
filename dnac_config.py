@@ -1,7 +1,7 @@
 # Step 1
 # Change DNAC IP to the one you are using
 
-DNAC_IP = "sandboxdnac.cisco.com"
+DNAC = "https://sandboxdnac.cisco.com/dna"
 DNAC_PORT = 443
 # Step 2
 # Enter user name and password to get a service ticket
