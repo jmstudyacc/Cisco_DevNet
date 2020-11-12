@@ -1,6 +1,5 @@
 REST Web Service APIs
 ---------------------
-
 A REST web service API (REST API) is a programming interface that communicates over HTTP while adhering to the principles of the REST architectural style.
 
 To refresh your memory, the six principles of the REST architectural style are:
