@@ -1,0 +1,110 @@
+As expressed, REST API responses are just HTTP responses. Therefore, what you can do in HTTP you can do in REST. These responses communicate the results of the client's communication.
+The response could contain a number of things ranging from: the data requested, status of the client/server interaction or inform the client that there was an error in the communication.
+
+RESY API responses are similar to API requests but are made of 3 major components:
+
+- HTTP status
+- Header
+- Body
+
+HTTP Status:
+------------
+As expected, REST APIs use the same status codes as HTTP to denote an outcome. The code can help the client determine an error and at times suggest troubleshoot steps.
+
+HTTP status codes are always 3 digits long, with the first digit denoting the class of code. The other 2 numbers do not have a standard meaning but tend to increment up.
+The five categories are:
+
+    1xx - Informational
+    2xx - Success
+    3xx - Redirection
+    4xx - Client error
+    5xx - Server error
+
+1xx - Informational
+        # These codes are only for informational purposes and can expect a number of messages. One such message would be that the server received the request but has yet to process the response.
+        # These requests do not typically contain a body.
+
+2xx - Success
+        # These denote a successful communication between client and server. If the API is SYNCHRONOUS then the 2xx message will also contain a body of the requested data.
+        # If the API is ASYNCHRONOUS the data will not be sent back in the 2xx message, but sent once processed
+
+3xx - Redirection
+        # Informs the client that it must take another action before the request can be completed. Usually, a different URL needs to be used.
+        # Depending on the API, the request may be automatically redirected to the correct URL after using the incorrect one
+
+4xx - Client Error
+        # Responses with a 4xx status code means the request contains an error.
+        # These errors can be because of bad syntax, invalid input or anything that prevents the request from being completed
+        # The CLIENT must take action to resolve these issues before resending the request
+
+5xx - Server Error
+        # These responses denote that the server is unable to service the request
+        # The request was correctly formed, but for some reason the server is incapable of fulfilling
+
+
+Common HTTP Status Codes:
+-------------------------
+
+HTTP Status     Status Message          Description 
+    Code
+-----------------------------------------------------------------------------------------------------------
+    200 	    OK 	                    Request was successfully and typically contains a payload (body)
+    201 	    Created 	            Request was fulfilled and the requested resource was created
+    202 	    Accepted 	            Request has been accepted for processing but is not complete
+    400 	    Bad Request 	        Request will not be processed due to an error with the request
+    401 	    Unauthorized 	        Request does not have valid authentication credentials to perform the request
+    403 	    Forbidden 	            Request was understood but has been rejected by the server
+    404 	    Not Found 	            Request cannot be fulfilled because the resource path of the request was not found on the server
+    500 	    Internal Server Error 	Request cannot be fulfilled due to a server error
+    503 	    Service Unavailable 	Request cannot be fulfilled because currently the server cannot handle the request
+
+
+Header:
+-------
+Just like the request, the response header also uses the standard HTTP header format and is optional. It provides additional information between the server and the client.
+It achieves this using name-value pair format that is separated by a colon [name]:[name].
+
+As before there are 2 headers, Response Headers and Entity Headers.
+
+Response headers:
+        # Response headers contain additional information that doesn't relate to the content of the message.
+        # Some typical response headers you may find for a REST API request include:
+
+Key 	        Example Value 	                        Description
+Set-Cookie 	    JSESSIONID=30A9DN810FQ428P; Path=/ 	    Used to send cookies from the server
+Cache-Control 	Cache-Control: max-age=3600, public 	Specify directives which MUST be obeyed by all caching mechanisms
+
+Entity headers:
+        # Entity headers are additional information that describes the content of the body of the message.
+        # One common entity header specifies the type of data being returned:
+
+Key 	        Example Value 	    Description
+Content-Type 	application/json 	Specify the format of the data in the body
+
+Body:
+-----
+The body os the REST API response is the data the client requested in the REST API request. The body is optional but if data is provided in the body the data type must be specified in the header, using Content-Type key.
+If the REST API request was unsuccessful the Body may contain additional information about the issue or suggest a course of action to be taken.
+
+Response Pagination:
+--------------------
+Some APIs, like Search APIs, may send a huge amount of data in the response. You can avoid being flooded by data by using response data pagination.
+As it sounds, the data can be broken up into chunks, or pages, that allow you to specify how many data elements you want to receive in 1 go. 
+This sounds a lot like a list right? Right, so this also enables you to specify which chunk you want to view. There is still no specific standard for pagination, but most implementations use the query param.
+
+Compressed Response Data:
+-------------------------
+If pagination is not possible, the server may return the data in a compressed format. The compression must be requested by the client through the API itself.
+Requesting data-compression is as simple as, adding an Accept-Encoding field to the header of request. Some accepted values are:
+
+    - gzip
+    - compress
+    - deflate
+    - br
+    - identity
+    - *
+
+If the server cannot provide any of the requested encoding it will respond with a HTTP STATUS CODE OF 406 -- NOT ACCEPTABLE
+
+If the server can provide the encoding, it will respond back with the compressed data and add the Content-Encoding field to the response header. The value entered here is the compression mechanism used.
+This enables the client to decompress the data appropriately. 
