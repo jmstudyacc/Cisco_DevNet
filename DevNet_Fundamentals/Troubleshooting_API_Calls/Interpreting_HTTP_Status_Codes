@@ -1,0 +1,118 @@
+REST APIs rely on HTTP status codes. This means the HTTP status codes should provide information on the status of the connection.
+Remember back to the 5 categories of HTTP status codes:
+
+Unless otherwise stated, the status code is part of the HTTP/1.1 standard (RFC 7231), which means the first digit of the status code defines the class of response. 
+The last two digits do not have any class or categorization role, but help distinguish between results. There are 5 of these categories:
+
+    1xx: Informational: Request received, continuing to process.
+    2xx: Success: The action was successfully received, understood, and accepted.
+    3xx: Redirection: Further action must be taken in order to complete the request.
+    4xx: Client Error: The request contains bad syntax or cannot be fulfilled.
+    5xx: Server Error: The server failed to fulfill an apparently valid request.
+
+Typically we see 2xx, 4xx and 5xx from the REST API server. Usually you can find the root cause of an error once you understand the meaning of the response codes. 
+Sometimes the API server also provides additional information in the response body.
+
+
+2xx - Success:
+--------------
+
+When the client receives a 2xx response code, it means the client's request was successfully received, understood, and accepted. 
+However, you should always be careful and verify that the response indicates success of the right action and that the script is doing what you think it is.
+
+4xx - Client side error:
+------------------------
+A 4xx response means that the error is on the client side. Some servers may include an entity containing an explanation of the error. If not, here are some general guidelines for troubleshooting common 4xx errors:
+
+    - 400 - Bad Request
+
+    The request could not be understood by the server due to malformed syntax. Check your API syntax.
+    One cause of a 400 Bad Request error is the resource itself.
+     Double-check the endpoint and resource you are calling, did you misspell one of the resources or forget the "s" to make it plural, such as /device versus /devices or /interface versus /interfaces? Is the URI well-formed and complete?
+
+    Another cause of a 400 Bad Request error might be a syntax issue in the JSON object the represents your POST request. Check the API reference guide to make sure.
+
+    - 401 - Unauthorized
+
+    This error message means the server couldn't authenticate the request.
+    Check your credentials, including username, password, API key, token, and so on. If there are no issues with those items, you may want to check the request URI again. 
+    The server may reject access in the case of an improper request URI.
+
+    - 403 - Forbidden
+
+    In this case, the server recognizes the authentication credentials, but the client is not authorized to perform the request. 
+    Some APIs, such as Cisco DNA Center, have Role Based Access Control, and require a super-admin role to execute certain APIs. Again, the API reference guide may provide additional information.
+
+    - 404 - Not Found
+
+    The server has not found anything matching the request URI; check the request URI to make sure it's correct. 
+    If the code used to work, you may want to check the latest API reference guide, as an API's syntax can change over time.
+
+    Consider the Cisco DNA Center "get all interfaces" API. Because the title says "all interfaces", 
+    you try to use api/v1/interfaces, but you get a 404 error because the API request is actually api/v1/interface.
+
+    - 405 - Method Not Allowed
+
+    In this case, the request was recognized by the server but the method specified in the request has been rejected by the server.
+    You may want to check the API reference guide to see what methods the server expects. 
+    The response from server may also include an Allow header containing a list of valid methods for the requested resource.
+
+    For example, if you mistakenly use the POST method for an API that expects the GET method you will receive a 405 error.
+
+    - 406 - Not acceptable
+    
+    This error indicates that the target resource does not have a current representation that would be acceptable to the client. 
+    The server has the data, but can't represent it using any of the options listed in the client's Accept- headers.
+
+    For example, the client is asking for SVG images:
+    Accept: image/svg+xml
+
+    - 407 - Proxy Authentication Required
+
+    This code is similar to 401 (Unauthorized), but indicates that the client must first authenticate itself with the proxy. 
+    In this scenario, there is a proxy server between the client and server, and the 407 response code indicates that client needs to authenticate with the proxy server first.
+
+    - 409 - The request could not be completed due to a conflict with the current state of the target resource.
+
+    For example, an edit conflict where a resource is being edited by multiple users would cause a 409 error. 
+    Retrying the request later might succeed, as long as the conflict is resolved by the server.
+
+    - 415 - Unsupported Media Type
+
+    In this case, the client sent a request body in a format that the server does not support. 
+    For example, if the client sends XML to a server that only accepts JSON, the server would return a 415 error.
+
+    These are just the most common 4xx response codes. 
+    If you encounter other 4xx response codes, you can refer to either RFC 2616, 6.1, Status-Line or RFC 7231, section 6, Response Status Codes for more information on what they mean.
+
+5xx Server Side Error:
+----------------------
+A 5xx response indicates a server side error.
+
+    - 500 - Internal Server Error
+
+    This error means that the server encountered an unexpected condition that prevented it from fulfilling the request.
+
+    - 501 - Not Implemented
+
+    This error means that the server does not support the functionality required to fulfill this request. 
+    For example, the server will respond with a 501 code when it doesn't recognize the request method and is therefore incapable of supporting it for any resource.
+
+    - 502 - Bad Gateway
+
+    This error means that the server, while acting as a gateway or proxy, received an invalid response from an inbound server it accessed while attempting to fulfill the request.
+
+    - 503 - Service Unavailable
+
+    This code indicates that the server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be resolved after a delay.
+
+    - 504 - Gateway Timeout
+
+    This error means that the server, while acting as a gateway or proxy, did not receive a timely response from an upstream server it needed to access in order to complete the request.
+
+
+If you get a 500 or 501 error, check the API reference guide to make sure the request is valid. 
+
+For other 5xx errors, check with your API server administrator to resolve the issue.
+
+These codes act as a guide, but really the best guide will be the API documentation. This reference guide and the status code guide will help you quickly identify or direct you to the root of the issue.

@@ -1,0 +1,76 @@
+No Response & HTTP Status Code from the API Server:
+---------------------------------------------------
+Not every API request will receive a response from the target server. There are a number of actors in the path to the target. 
+If the API request simply does not arrive at the target server your client will not receive a reply. 
+
+If your API request fails the best place to start looking is on the client itself.
+
+Client Side Error:
+------------------
+Do you have a user error? To err is human, so is there an error in the code? You should consider these 2 things:
+ - Is the URI correct?
+ - Has this request worked before?
+
+When using a REST API for the first time, mistyping the URI is commonplace. Check the documentation for the API to confirm that the URI input is correct.
+
+EXAMPLE - INVALID URI:
+----------------------
+To test the invalid URI condition, run a script that looks like this:
+
+import requests
+uri = 'sandboxdnac.cisco.com/dnac/intent/api/v1/network-device'
+resp = requests.get(uri, verify = False)
+
+The traceback for this request will look like this:
+
+....requests.exceptions.MissingSchema: Invalid URL 'sandboxdnac.cisco.com/dnac/intent/api/v1/network-device'
+Perhaps you meant http://sandboxdnac.cisco.com/dna/intent/api/v1/network-device?
+
+EXAMPLE - WRONG DOMAIN:
+-----------------------
+To test the wrong domain name condition, run a script such as the one below, which simply makes a request to a URI that has the wrong domain name.
+
+import requests
+url = 'https://sandboxdnac123.cisco.com/dna/intent/api/v1/network-device'
+resp = requests.get(url, verify = False)                                    # You can use this to disable SSL verification between client and server
+
+The tracebook will look something like this:
+
+....request.exceptions.ConnectionError: HTTPSConenctionPool (host='sandboxdnac123.cisco.com', port=443): 
+Max retries exceeded with url: /dna/intent/api/v1/network-device ... Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known
+
+------------------------------
+Is There a Connectivity Issue?
+------------------------------
+If the URI is correct and still inaccessible, consider the following:
+ - Are there any proxy, firewall or VPN issues?
+ - Is there an SSL error?
+
+ EXAMPLE - INVALID CERTIFICATE:
+ ------------------------------
+ If the connection is being built using a secure transport, which it really should, you need to ensure certificates can be passed.
+ The connection will perform an SSL handshake between the client and the server in order to authenticate one another. This handshake needs to be successful for the REST API to be sent.
+
+ When using the requests library in Python, if the SSL handshake fails the traceback will contain the line :. requests.exceptions.SSLError
+
+ In this situation you need to fix the invalid certificate issue. Analyse the log messages to confirm what the problem is with the certificate.
+
+-------------------
+ Server Side Error:
+ ------------------
+ Once you have confirmed there are no client-side issues, it is time to turn to the server.
+
+ Q1 - Is the API Server Functioning?
+  - Is the server on?
+  - Are there cabling issues?
+  - Did the domain name change?
+  - Is the network down?
+
+To test if the IP address is accessible run something like this:
+
+import requests
+uri = 'http://1.2.3.4/dnac/intent/api/v1/network-device'
+resp = requests.get(uri, verify = False)
+
+If the server is down, there is nothing that you can do on the client.
+You need to contact the server owner and get them to check the connectivity.

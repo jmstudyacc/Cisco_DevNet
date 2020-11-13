@@ -1,0 +1,64 @@
+What are Rate Limits?
+---------------------
+APIs are great as they allow for more complex interactions between applications!
+However, we need to control the number of requests that can be made by an API to a server. This is what is known as API Rate limiting.
+This provides a quota on how many requests a client/user can make in a defined unit of time. Implementing API Rate Limiters is considered best practise.
+It is also going to be a good defence against your server being attacked in a DoS fashion. API Rate Limiting helps:
+ 
+ - Avoid a server overload caused by too many requests at once
+ - Provide a better service and response time to all users
+ - Protect against a denial-of-service attack
+
+Consumers of APIs should understand the Algorithms in place for rate limiting. This will help the consumer avoid hitting the limits.
+However applications should gracefully handle situations where those limits are exceeded. 
+
+Rate Limit Algorithms:
+----------------------
+There is no standard way to implement rate limiting, but common Algorithms include:
+ - Leaky bucket
+ - Token bucket
+ - Fixed window counter
+ - Sliding window counter
+
+ Leaky Bucket - this algorithm puts all of the incoming requests into a bucket in the order they were received. The incoming requests can continue to flood in,
+ but the server will only service a defined number of requests in a given timeframe. If the incoming requests are too numerous for the bucket,
+ requests that would overload the bucket are rejected.
+
+ The client therefore must be prepared to delay requests and anticipate rejected requests
+
+ Token Bucket - similar to the above, but with the complexity of tokens being assigned to clients. Clients have a finite number of tokens per hour.
+ If all of the tokens are used in 5 minutes, the client needs to wait before it can have any more requests processed. The number of tokens will accumulate over time.
+
+ Clients need to be prepared to, track how many tokens it has available and manage rejected requests by adding a retry mechanism once tokens are refreshed
+
+ Fixed Window Counter - Similar to the token bucket, BUT, it uses counters not tokens and counters DO NOT accumulate over time.
+ The fixed window of time is assigned to a counter to represent how many requests can be processed during that period. When a server receives a request the counter,
+ the current window of time is checked to confirm it is not zero. After process the counter is deducted.
+
+ If the limit for that window of time is met, all subsequent requests within that time window are rejected. When the next window of time begins the counter will be reset.
+ At this point requests can be processed again.
+
+ The client must known when the time window starts and ends so it knows how many requests can be made in that duration. Similar to the Token Bucket,
+ the client should have an inbuilt mechanism to retry once the counter is reset.
+
+ Sliding Window Counter - A fixed number of requests are allowed to be made in a set duration of time. If the limit is 5 in 60s, the server will track how many requests are made in 60s.
+ If more than 5 requests have been made in the last 60s, the nth request will be rejected.
+
+ Here the client does not need to know details about times, but just needs to know what the rate limit is. This way the client can delay requests to ensure they are not rejected.
+ It is still crucial that the client is able to handle requests that fail though.
+
+ Knowing The Rate Limit:
+ -----------------------
+ An API's documentation should provide you with the details of the rate limit & units of time. Many APIs will include the rate-limit detail in the response header,
+ but this is not standardised yet so it can differ between APIs. The information will be provided in a key-value pair and may include:
+  - X-RateLimit-Limit: the max number of requests that can be made in a specific unit of time
+  - X-RateLimit-Remaining: the number of requests remaining that the requester can make in the current rate limit window
+  - X-RateLimit-Reset: the time the rate-limit window will reset
+
+This information stored in the header can then be used by the client to avoid hitting the rate limit.
+
+If the rate-limit is hit/exceeded you could expect the 2 following status codes to be returned:
+ - 429: Too Many Requests
+ - 403: Forbidden
+
+These are not standardised so you may see different errors depending on the API.

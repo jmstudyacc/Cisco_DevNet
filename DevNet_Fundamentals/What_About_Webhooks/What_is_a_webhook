@@ -1,0 +1,52 @@
+What is a Webhook?
+------------------
+A webhook is an HTTP callback, or an HTTP post, to a specified URL that notifies your application when an eventhas occurred in 1 of your resources on the platform.
+This is a simple concept that can be mapped to humans, it is as if you have said to your friends, "Tell me immediately if X happens."
+
+That friend is the webhook provider and you are the application.
+
+This negates the need to include polling mechanisms in the application. In the place of polling the webhook will immediately inform and allow for real time data to be gathered.
+Losing polling increases operational efficiency of the application as well as the network overhead incurred. It provides a more accurate set of data as well! 
+Polling occurs at a fixed rate so you would never get real-time data.
+
+Webhooks are also identified as reverse APIs, because applications subscribe to a webhook server by registering with the webhook provider. 
+DUring the registration process the application provides a URI to be called by the server when the target event occurs. This URI is typically an API on the application.
+
+When the webhook is triggered, the server sends a notification by becoming the caller and makes a request to the provided URI.
+The URI represents to the API for the application and the application becomes the callee consuming the request. This is the origination of the term reverse API.
+The roles are reversed as the server becomes the client and the client becomes the server (for webhooks). 
+
+Multiple applications can subscribe to a single webhook server!
+
+-----------------
+WEBHOOK EXAMPLES:
+-----------------
+#
+
+Cisco DNA Center provides webhooks that enable 3rd party applications to receive network data when specified events occur. 
+You can register your application with a particular REST endpoint URI that receives a message from Cisco DNAC when a particular event occurs.
+For instance, a network device becomes unreachable, the Cisco DNAC webhook can send an HTTP POST to the URI your app has registered on the Cisco DNAC.
+Your application then receives all the details of the outage in a JSON obejct from that HTTP POST so it can take action appropriately.
+
+Here Cisco DNAC is the webhook provider
+
+#
+
+You can create a webhook on Cisco WebEx Team to notify you when a new message is posted to a particular room. Instead of your application repeatedly polling Teams.
+Teams will send an HTTP POST message to the URI your application is registered on Webex Teams. This webhook will automatically notify you when a new messages comes in.
+
+Here Cisco Webex Teams is the webhook provider.
+
+Consuming Webhooks:
+-------------------
+Consuming a webhook is depending on 2 requirements:
+ - The application must be running at all times to receive the HTTP POST requests
+ - Application must register a URI on the webhook provider so the provider knows where to send a notification when the target event occurs
+
+The application must also be able to handle the incoming notifications from the webhook server.
+
+Webhooks requires work with 3rd parties, which can make it difficult to manage all the dependencies.
+There are a number of free tools that can be used to make sure your application receives notifications from the webhook.
+Many will also provide examples of the content to be provided in the webhook notification. 
+
+Search for 'webhook tester' to train your application to receive webhook notifications.
