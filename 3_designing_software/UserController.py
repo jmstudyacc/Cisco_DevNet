@@ -11,8 +11,9 @@ class UserController(ABC):
         raise NotImplementedError  # these methods need to be implemented by the strategy implementation
 
     @abstractmethod
-    def get(self,id):
+    def get(self, id):
         raise NotImplementedError
+
 
 """
 This class acts as an Abstraction interfaces & serves as the contract between the view 
