@@ -2,13 +2,13 @@
 This behavioural pattern is a one-to-many pattern whereby many subscribe to notifications
 from one. One send notifications out as events occur to update the many.
 
-A real world example is close to following a person on social media. Instead of 
-continuously checking their page(s) for new content, you can receive a notification.
+A real world example is close to following a playlist on a music streaming site. Instead of 
+continuously checking playlist(s) for new content, you can receive a notification.
 This is the natural evolution of the 'broadcast' approach of notifications. You can
 selectively choose what you subscribe to.
 
-Here you can consider the news feed to be like a Class and you, the user, to be another
-Class. The User class maintained consistency by periodically polling the News Feed 
+Here you can consider the playlist to be like a Class and you, the user, to be another
+Class. The User class maintained consistency by periodically polling the Playlist 
 Class, but too much reliance between these two classes leads to tight coupling. This is
 a tricky problem, but thankfully the Observer pattern helps address this issue.
 
