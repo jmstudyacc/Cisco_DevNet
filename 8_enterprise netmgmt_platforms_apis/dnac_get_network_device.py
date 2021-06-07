@@ -43,20 +43,43 @@ def get_network_devices(token, mac, ip):
         print("Something went wrong!")
 
     if not response.json()['response']:
-        raise Exception(print("Incorrect values entered for IP Address or MAC Address"))
+        raise Exception(print("Incorrect IP Address & MAC Address Combination"))
 
-    return json.dumps(response.json(), indent=2)
+    return response.json()
+
+
+def print_device_list(device_json):
+    print("{0:42}{1:17}{2:12}{3:18}{4:12}{5:16}{6:15}".
+          format("Hostname", "Mgmt IP", "Serial #", "Platform ID", "SW Version", "Role", "Uptime"))
+
+    for device in device_json['response']:
+        uptime = "N/A" if device['upTime'] is None else device['upTime']
+
+        if device['serialNumber'] is not None and "," in device['serialNumber']:
+            serialPlatformList = zip(device['serialNumber'].split(","), device['platformId'].split(","))
+
+        else:
+            serialPlatformList = [(device['serialNumber'], device['platformId'])]
+
+        for (serialNumber, platformId) in serialPlatformList:
+            print("{0:42}{1:17}{2:12}{3:18}{4:12}{5:16}{6:15}".
+                  format(device['hostname'],
+                         device['managementIpAddress'],
+                         serialNumber,
+                         platformId,
+                         device['softwareVersion'],
+                         device['role'], uptime))
 
 
 if __name__ == "__main__":
     print("Printing out unfiltered list:")
-    get_network_devices(get_auth_token(), None, None)
+    print_device_list(get_network_devices(get_auth_token(), None, None))
 
     print("\nPrinting out list filtered by MAC Address:")
-    print(get_network_devices(get_auth_token(), "00:c8:8b:80:bb:00", None))
+    print_device_list(get_network_devices(get_auth_token(), "00:c8:8b:80:bb:00", None))
 
     print("\nPrinting out list filtered by IP Address:")
-    print(get_network_devices(get_auth_token(), None, "10.10.22.73"))
+    print_device_list(get_network_devices(get_auth_token(), None, "10.10.22.73"))
 
     print("\nPrinting out list filtered by IP Address and MAC Address:")
     get_network_devices(get_auth_token(), "00:c8:8b:80:bb:00", "10.10.22.73")
