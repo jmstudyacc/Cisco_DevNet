@@ -13,8 +13,9 @@ def get_network_devices(token, mac, ip):
     DNAC_TOKEN = token
 
     # set the headers to use the DNAC_TOKEN variable
-    DNAC_HEADERS = {'X-Auth-Token': f'{DNAC_TOKEN}',
-                    'content-type': 'application/json'
+    DNAC_HEADERS = {
+        'X-Auth-Token': f'{DNAC_TOKEN}',
+        'content-type': 'application/json',
                     }
 
     # payload is an empty dictionary - this will be filled by DNAC
