@@ -10,9 +10,6 @@ def get_auth_token():
     # DNAC Endpoint URL
     DNAC_URL = 'https://sandboxdnac.cisco.com/dna/system/api/v1/auth/token'
 
-    # empty payload which is not needed in this API call
-    # payload = {}
-
     # Create the POST request - verify set to False as this is an HTTPS connection
     response = requests.post(DNAC_URL, headers=DNAC_HEADERS,)# verify=False)
 

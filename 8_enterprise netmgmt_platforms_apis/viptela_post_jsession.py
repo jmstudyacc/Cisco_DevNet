@@ -1,6 +1,12 @@
 import requests
 import sys
-import json
+
+'''
+Split this up:
+1 - Get headers
+2 - Get jsessionid
+3 - Get token
+'''
 
 
 def login(vmanage_ip, username, password):
@@ -18,11 +24,21 @@ def login(vmanage_ip, username, password):
     # If vManage has a certificate signed by a trusted authority change verify to True
     login_response = sess.post(url=login_url, data=login_data, verify=False)
 
-    if login_response.status_code == 200:
-        print(login_response.status_code)
+    sess_headers = login_response.headers
+    sess_cookies = login_response.cookies
+
+    # Gets the list of headers returned from request
+    for k in sess_headers:
+        print(f'{k}: {sess_headers.get(k)}')
+
+    # Returns information on state of request
+    if sess_cookies.get('JSESSIONID'):
+        # Gets the cookie directly from the header
+        print(f"Enjoy your tasty cookie: {sess_cookies.get('JSESSIONID')}")
         print("Login success.")
     else:
         print("Login Failed")
+        print("Exiting...")
         sys.exit(0)
 
 

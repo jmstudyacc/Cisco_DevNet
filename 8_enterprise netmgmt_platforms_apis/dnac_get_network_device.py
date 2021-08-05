@@ -76,6 +76,7 @@ if __name__ == "__main__":
     print("Printing out unfiltered list:")
     print_device_list(get_network_devices(get_auth_token(), None, None))
 
+
     print("\nPrinting out list filtered by MAC Address:")
     print_device_list(get_network_devices(get_auth_token(), "00:c8:8b:80:bb:00", None))
 
