@@ -12,9 +12,4 @@ else Error
 	wc --> User: HTTP 400 Bad Request
 	end
 
-participant "Webex Teams Client" as wtc
-participant "Webex Teams Chatbot App" as wtca
-participant "ChatsOps Gateway" as cg
-participant "Meraki API" as ma
-
 

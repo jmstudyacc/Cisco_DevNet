@@ -1,0 +1,15 @@
+@startuml
+actor User
+participant "Webex Teams Client" as wtc
+participant "Webex Teams Chatbot App" as wtca
+
+'1 - user sends message to webex teams client, this is a Synchronous call so it activates the user's lifeline - user expects feedback & activates before message sends
+activate User
+User -> wtc ++: Write message
+
+'2 - when client detects user input the message is relayed to relevant room on Webex Teams - briefly activates ChatBot App lifeline as it responds 200 OK'
+wtc -> wtca++: POST https://api.webexteams.com/messages
+wtca --> wtc : 200 OK
+
+
+

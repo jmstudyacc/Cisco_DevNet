@@ -1,0 +1,27 @@
+@startuml
+actor User
+participant "Webex Teams Client" as wtc
+participant "Webex Teams Chatbot App" as wtca
+participant "ChatsOps Gateway" as cg
+
+'1 - user sends message to webex teams client, this is a Synchronous call so it activates the user's lifeline - user expects feedback & activates before message sends
+activate User
+User -> wtc ++: Write message
+
+'2 - when client detects user input the message is relayed to relevant room on Webex Teams - briefly activates ChatBot App lifeline as it responds 200 OK'
+wtc -> wtca++: POST https://api.webexteams.com/messages
+wtca --> wtc --: 200 OK
+deactivate wtc
+
+'3 - when wtca detects new message, webhook subscribed to room is triggered with POST sent to event handler of cg, cg lifeline is activated as cg is performing action'
+wtca -> cg++: POST https://cg.webexteams.com/events
+
+'4 - handle event - 1st handle event sent to cg, valid = 200 or 204 (no content) - YOU SHOULD ALSO INCLUDE INVALID EVENT HANDLING'
+alt Empty Event
+	cg --\\ wtca: HTTP 204 No Content
+else Valid Event
+	cg --\\ wtca: HTTP 200 OK
+	end
+
+
+
