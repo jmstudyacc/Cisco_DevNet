@@ -1,0 +1,20 @@
+@startuml
+actor User
+participant "Webex Cloud" as wc
+
+'1st - register webhook with Webex Teams for notifications, assume ChatBot application has already been created - API endpoint "/webhooks" used to register a webhook'
+User -> wc++: POST https://api.webexteams.com/webhooks
+
+alt Success
+	wc --> User--: HTTP 200 OK
+
+else Error
+	wc --> User: HTTP 400 Bad Request
+	end
+
+participant "Webex Teams Client" as wtc
+participant "Webex Teams Chatbot App" as wtca
+participant "ChatsOps Gateway" as cg
+participant "Meraki API" as ma
+
+
